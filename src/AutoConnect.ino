@@ -8,18 +8,18 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
-#include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
+#include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager.git
 ESP8266WebServer server(80);
 const char* configurationAPName = "AutoConnectAP";
 
 //for DS3231/I2C
 #include <time.h>
 #include <Wire.h>
-#include <RtcDS3231.h>            //https://github.com/Makuna/Rtc
+#include <RtcDS3231.h>            //https://github.com/Makuna/Rtc.git
 RtcDS3231<TwoWire> Rtc(Wire);
 
 //SSD1306 I2C
-#include <SSD1306.h>              //https://github.com/squix78/esp8266-oled-ssd1306
+#include <SSD1306.h>              //https://github.com/squix78/esp8266-oled-ssd1306.git
 #include <OLEDDisplay.h>
 #include <OLEDDisplayFonts.h>
 #include <OLEDDisplayUi.h>
@@ -31,7 +31,7 @@ OLEDDisplayUi ui (&display);
 
 #include <math.h>
 #include <FS.h>                            //stockage de settings
-#include <ArduinoJson.h>
+#include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson.git
 StaticJsonBuffer<1000> jsonBuffer;
 
 //relay control
