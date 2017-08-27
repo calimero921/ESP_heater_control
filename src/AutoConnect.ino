@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+#include <ESP8266WiFi.h>           //https://github.com/esp8266/Arduino
 
 //needed for library
 #include <WiFiClient.h>
@@ -8,18 +8,18 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
-#include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
+#include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
 ESP8266WebServer server(80);
 const char* configurationAPName = "AutoConnectAP";
 
 //for DS3231/I2C
 #include <time.h>
 #include <Wire.h>
-#include <RtcDS3231.h>
+#include <RtcDS3231.h>            //https://github.com/Makuna/Rtc
 RtcDS3231<TwoWire> Rtc(Wire);
 
 //SSD1306 I2C
-#include <SSD1306.h>
+#include <SSD1306.h>              //https://github.com/squix78/esp8266-oled-ssd1306
 #include <OLEDDisplay.h>
 #include <OLEDDisplayFonts.h>
 #include <OLEDDisplayUi.h>
@@ -76,7 +76,7 @@ WiFiUDP udp;
 void setup() {
     // put your setup code here, to run once:
     pinMode(led, OUTPUT);
-    digitalWrite(led, 0);   
+    digitalWrite(led, 0);
     Serial.begin(115200);
     //saut de ligne pour l'affichage dans la console.
     Serial.println();
@@ -84,11 +84,11 @@ void setup() {
 
     SPIFFS.begin();
     loadSettings();
-    
+
     pinMode(RelayPin1, OUTPUT);
     pinMode(RelayPin2, OUTPUT);
     controlRelay(relayMode);
-  
+
     // initialize dispaly
     display.init();
     display.clear();
@@ -100,7 +100,7 @@ void setup() {
     display.setContrast(255);
     display.drawString(64, 10, "Initialisation...");
     display.display();
-  
+
     // Setup RTC
     Rtc.Begin();
     RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
@@ -124,7 +124,7 @@ void setup() {
     // Reset the DS3231 RTC status in case it was wrongly configured
     Rtc.Enable32kHzPin(false);
     Rtc.SetSquareWavePin(DS3231SquareWavePin_ModeNone);
-  
+
     //WiFiManager
     //Local intialization. Once its business is done, there is no need to keep it around
     WiFiManager wifiManager;
@@ -133,7 +133,7 @@ void setup() {
 
     wifiManager.setAPCallback(configModeCallback);
     wifiManager.setConfigPortalTimeout(180);
-    
+
     //set custom ip for portal
     //wifiManager.setAPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
 
@@ -146,7 +146,7 @@ void setup() {
     //wifiManager.autoConnect();
 
     if(WiFi.status() != WL_CONNECTED) {
-        //relance l'application après le timeout du portail 
+        //relance l'application après le timeout du portail
         //en cas d'arret secteur où la box redemarre lentement.
         ESP.restart();
     }
@@ -212,7 +212,7 @@ void displayManagement() {
     RtcDateTime now = Rtc.GetDateTime();
 
     display.clear();
-        
+
     display.setFont(ArialMT_Plain_10);
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.drawString(0, 0, printDate(now));
@@ -244,7 +244,7 @@ void displayManagement() {
             }
         }
     }
-        
+
     display.setFont(ArialMT_Plain_16);
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.drawString(32, 11, printTemperature());
@@ -256,7 +256,7 @@ void displayManagement() {
     display.setFont(ArialMT_Plain_10);
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.drawString(32, 54, WiFi.localIP().toString());
-        
+
     display.setFont(ArialMT_Plain_10);
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     String strMode = "inconnu";
@@ -415,7 +415,7 @@ void handleUpdateParams() {
                 //paramétrage de la date
                 String newDate = transDate(value);
                 //Serial.println("Date -> " + newDate);
-                
+
                 //paramétrage de l'heure
                 RtcDateTime now = Rtc.GetDateTime();
                 String newTime = printTime(now);
@@ -569,7 +569,7 @@ String printDateTime(const RtcDateTime& dt) {
 String printDate(const RtcDateTime& dt) {
     char datestring[11];
 
-    snprintf_P(datestring, 
+    snprintf_P(datestring,
             countof(datestring),
             PSTR("%02u/%02u/%04u"),
             dt.Day(),
@@ -583,7 +583,7 @@ String printDate(const RtcDateTime& dt) {
 String printTime(const RtcDateTime& dt) {
     char timestring[9];
 
-    snprintf_P(timestring, 
+    snprintf_P(timestring,
             countof(timestring),
             PSTR("%02u:%02u:%02u"),
             dt.Hour(),
@@ -596,7 +596,7 @@ String printTime(const RtcDateTime& dt) {
 
 String transDate(String localDate) {
     //Serial.println("date initiale -> " + localDate);
-    String _day = localDate.substring(0,2);  
+    String _day = localDate.substring(0,2);
     //Serial.println("date initiale -> dd  =" + _day);
     String _month = localDate.substring(3,5);
     //Serial.println("date initiale -> mm  =" + _month);
@@ -641,7 +641,7 @@ String transDate(String localDate) {
             _month = "Dec";
             break;
     }
-  
+
     String result = _month + " " + _day + " " + _year;
     //Serial.println("date finale -> " + result);
     return result;
@@ -652,7 +652,7 @@ void setNTPTime() {
     if(!ntpActive) return;
 
     //get a random server from the pool
-    WiFi.hostByName(ntpServerName, timeServerIP); 
+    WiFi.hostByName(ntpServerName, timeServerIP);
 
     sendNTPpacket(timeServerIP); // send an NTP packet to a time server
     // wait to see if a reply is available
@@ -669,7 +669,7 @@ void setNTPTime() {
         // or two words, long. First, esxtract the two words:
         unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
         unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
-        
+
         // combine the four bytes (two words) into a long integer
         // this is NTP time (seconds since Jan 1 1900):
         unsigned long secsSince1900 = highWord << 16 | lowWord;
@@ -692,7 +692,7 @@ void setNTPTime() {
         unsigned long epochOct = epochEndDaylight(timeToTest.Year());
         if(epoch > epochMar) {
             if(epoch < epochOct) {
-                epoch += 3600;    
+                epoch += 3600;
             }
         }
 
@@ -855,7 +855,7 @@ void loadSettings() {
         //Serial.println("fichier absent -> creation");
         saveSettings();
     }
-    
+
     //lecture des données du fichier
     File configFile = SPIFFS.open("/settings.json", "r");
     if(!configFile) {
@@ -886,4 +886,3 @@ void loadSettings() {
     configFile.close();
     Serial.println("loading done");
 }
-
