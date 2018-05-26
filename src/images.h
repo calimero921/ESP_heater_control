@@ -1,4 +1,4 @@
-const char wifiSymbol[] PROGMEM = {
+const uint8_t wifiSymbol[] PROGMEM = {
     B01001001,
     B01001001,
     B00101010,
@@ -9,7 +9,7 @@ const char wifiSymbol[] PROGMEM = {
     B00001000
 };
 
-const char emptySymbol[] PROGMEM = {
+const uint8_t emptySymbol[] PROGMEM = {
     B00000000,
     B00000000,
     B00000000,
